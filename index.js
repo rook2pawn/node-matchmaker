@@ -1,31 +1,16 @@
+var EventEmitter = require('events').EventEmitter;
+var Qlib = require('queuelib');
 var Matcher = function(obj) {
-	var config = {interval:undefined,checkTimerId:undefined};
-	if (obj.interval !== undefined) {
-		config.interval;
-	} else {
-		config.interval = 4000;	
-	}
+	var myEmitter = new EventEmitter;
+	var openRequests = Qlib({emitter:myEmitter});
 	var self = {};
-	var openRequests = [];
-	var look = function() {
-		openRequests.forEach(function() {
-		});
-	};
-	self.push = function(obj) {
-		openRequests.push({val:obj.value,evaluation:obj.evaluation,cb:obj.cb});	
+	self.push = function(obj,fn) {
+		openRequests.push(obj,fn);
 		return self;
 	};
-	self.start = function () {
-		config.checkTimerId = setInterval(chron,config.interval);
-		return self;
-	};
-	self.stop = function() {
-		if (config.checkTimerId !== undefined) {
-			clearInterval(config.checkTimerId);
-		}
-		return self;
-	};
+	return self;
 };
+
 exports = module.exports = Matcher;
 
 // an evalutation function will be passed one object, and the sole purpose of this function
