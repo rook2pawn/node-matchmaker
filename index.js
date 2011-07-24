@@ -2,7 +2,7 @@ var EventEmitter = require('events').EventEmitter;
 var Qlib = require('queuelib');
 var Matcher = function(obj) {
 	var myEmitter = new EventEmitter;
-	var openRequests = Qlib({emitter:myEmitter});
+	var openRequests = Qlib({emitter:myEmitter,noDeleteOnNext:true});
 	var self = {};
 	self.push = function(obj,fn) {
 		openRequests.push(obj,fn);
