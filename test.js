@@ -18,57 +18,73 @@ var preferenceFn = function(other,self) {
 };
 var generateResultSetFn = function() {
 };
-matcher()
-	.push({id:1,name:"Garry Kasaparov",elo:2100,win:190,loss:20},
-	function(el,emitter,self) { 
-		setTimeout(function() {
-			var queue = self.queue();
-			var resultSet = [];
-			queue.forEach(function(obj) {
-				var result = {match:preferenceFn(obj[0],el),player:obj};
-				resultSet.push(result);
-			});
-			console.log("Result set for " + el.name); console.log(resultSet);
+var mymatcher = matcher();
+mymatcher.push({id:1,name:"Garry Kasaparov",elo:2100,win:190,loss:20},
+	function foo(el,emitter,self) { 
+		var queue = self.queue();
+		var resultSet = [];
+		queue.forEach(function(obj) {
+			var result = {match:preferenceFn(obj[0],el),player:obj};
+			resultSet.push(result);
+		});
+		console.log("Result set for " + el.name); console.log(resultSet);
+		if (resultSet.length == 0) { 
+			setTimeout(function() {
+				self.push(el,foo(el,emitter,self));
+			},3000);
+		} else {
 			emitter.emit('next');
-		},1000);
-	})
-	.push({id:2,name:"Bobby Fischer",elo:2050,win:100,loss:38},
-	function(el,emitter,self) { 
-		setTimeout(function() {
-			var queue = self.queue();
-			var resultSet = [];
-			queue.forEach(function(obj) {
-				var result = {match:preferenceFn(obj[0],el),player:obj};
-				resultSet.push(result);
-			});
-			console.log("Result set for " + el.name); console.log(resultSet);
-
-			emitter.emit('next');
-		},1000);
-	})
-	.push({id:3,name:"Glaurung",elo:2800,win:129,loss:33},
-	function(el,emitter,self) { 
-		setTimeout(function() {
-			var queue = self.queue();
-			var resultSet = [];
-			queue.forEach(function(obj) {
-				var result = {match:preferenceFn(obj[0],el),player:obj};
-				resultSet.push(result);
-			});
-			console.log("Result set for " + el.name); console.log(resultSet);
-			emitter.emit('next');
-		},1000);
-	})
-	.push({name:"Fruit",elo:2750,win:201,loss:10},
-	function(el,emitter,self) { 
-		setTimeout(function() {
-			var queue = self.queue();
-			var resultSet = [];
-			queue.forEach(function(obj) {
-				var result = {match:preferenceFn(obj[0],el),player:obj};
-				resultSet.push(result);
-			});
-			console.log("Result set for " + el.name); console.log(resultSet);
-			emitter.emit('next');
-		},1000);
+		}
 	});
+mymatcher.push({id:2,name:"Bobby Fischer",elo:2050,win:100,loss:38},
+	function foo(el,emitter,self) { 
+		var queue = self.queue();
+		var resultSet = [];
+		queue.forEach(function(obj) {
+			var result = {match:preferenceFn(obj[0],el),player:obj};
+			resultSet.push(result);
+		});
+		console.log("Result set for " + el.name); console.log(resultSet);
+		if (resultSet.length == 0) { 
+			setTimeout(function() {
+				self.push(el,foo(el,emitter,self));
+			},3000);
+		} else {
+			emitter.emit('next');
+		}
+	});
+mymatcher.push({id:3,name:"Glaurung",elo:2800,win:129,loss:33},
+	function foo(el,emitter,self) { 
+		var queue = self.queue();
+		var resultSet = [];
+		queue.forEach(function(obj) {
+			var result = {match:preferenceFn(obj[0],el),player:obj};
+			resultSet.push(result);
+		});
+		console.log("Result set for " + el.name); console.log(resultSet);
+		if (resultSet.length == 0) { 
+			setTimeout(function() {
+				self.push(el,foo(el,emitter,self));
+			},3000);
+		} else {
+			emitter.emit('next');
+		}
+	});
+mymatcher.push({name:"Fruit",elo:2750,win:201,loss:10},
+	function foo(el,emitter,self) { 
+		var queue = self.queue();
+		var resultSet = [];
+		queue.forEach(function(obj) {
+			var result = {match:preferenceFn(obj[0],el),player:obj};
+			resultSet.push(result);
+		});
+		console.log("Result set for " + el.name); console.log(resultSet);
+		if (resultSet.length == 0) { 
+			setTimeout(function() {
+				self.push(el,foo(el,emitter,self));
+			},3000);
+		} else {
+			emitter.emit('next');
+		}
+	});
+
