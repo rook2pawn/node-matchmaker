@@ -29,11 +29,14 @@ function preference(el,emitter,self) {
 			preference(el,emitter,self);
 		},3000);
 	} else {
+		console.log(el.name + " is satisifed.");
+		console.log(resultSet);
 		var comp = function(a,b) {
 			return b.match - a.match
 		};
 		el.resultSet = resultSet.sort(comp);
-		console.log(el.name + " wants to be matched against " + el.resultSet[0].player[0].name);
+		console.log(el);
+		console.log(el.name + " wants to be matched against ");console.log(el.resultSet[0].player[0].name);
 	}
 	emitter.emit('next');
 };
@@ -46,3 +49,4 @@ mymatcher.push({id:2,name:"Bobby Fischer",elo:2050,win:100,loss:38},preference);
 mymatcher.push({id:3,name:"Glaurung",elo:2800,win:129,loss:33},preference);
 mymatcher.push({id:4,name:"Fruit",elo:2750,win:201,loss:10},preference);
 mymatcher.push({id:5,name:"John Q.",elo:1450,win:33,loss:30},preference);
+console.log(mymatcher.queue());

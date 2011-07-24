@@ -5,7 +5,17 @@ var Matcher = function(obj) {
 	var openRequests = Qlib({emitter:myEmitter,noDeleteOnNext:true});
 	var self = {};
 	self.push = function(obj,fn) {
+		var x = new Date();
+		obj.enterTime = x.getTime();
+		obj.matched = false;
 		openRequests.push(obj,fn);
+		return self;
+	};
+	self.queue = function(){
+		return openRequests.queue();
+	};
+	self.update = function() {
+		openRequests.update();
 		return self;
 	};
 	return self;
