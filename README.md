@@ -19,8 +19,7 @@ how
 		readyfunc:function(player,resultSet){
 			var opp = resultSet[0].player[0];
 			console.log(player.name + "("+ player.elo + ") most preferred opponent is " + opp.name + "(" + opp.elo + ")");
-		},
-		obj:function(){}
+		}
 	});
 	mymatcher
 		.push({id:1,name:"Garry Kasaparov",elo:2100,win:190,loss:20},matcher.preference)
@@ -37,15 +36,41 @@ how
 	> Glaurung(2800) is matched with Fruit(2750)
 	> Fruit(2750) is matched with Glaurung(2800)
  
-elements
+concepts
 ========
+
+The following is a very general similarity function that operates on a single key. Clearly, you can compose much more
+sophisticated functions! If you do, be sure to make sure you are measuring orthogonal properties (a word about that later.)
+
+	Matcher.similarityFn = function(other,self,key) {
+		var diff = Math.abs(other[key]- self[key]);
+		var ratio = diff / self[key];
+		var match = 1 - ratio;
+		return match;
+	};
 
 Matchmaking is composed of primarily two pieces:
 
 1. A preference function - a function that evaluates every other member in the queue
 2. A queue to hold the unmatched.
 
-Included is a sample preference function (Matcher.preference) that illustrates roughly how to write a preference function,
-and its role within the queue, and how it can provide some elements of flow control within the queue.
-Also included is a similarity function (used by the preference function) to help illustrate the kind of function you'll want
-to write yourself. The main idea is that we want some way to gauge how each object can numerically assess every other object.
+Invocation
+==========
+
+	Matcher.({readyfunc:function(object,readySet){}})
+
+The readyfunction is called whenever an object has a set of matching results. The readyfunc should be tasked with the following
+
+1. Notifying the object
+2. Notifying the top one or two objects in readySet (a sorted array of best match to worst match)
+
+methods
+=======
+
+.push(obj,preferenceFn)
+-----------------------
+
+object is the element to be matched, and preferenceFn is the preference-evaluation function that will be applied to the queue
+(excluding itself)
+
+
