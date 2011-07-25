@@ -9,6 +9,8 @@
     "url": "git://github.com/rook2pawn/node-matchmaker.git"
   },
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "queuelib" : ">= 0.0.6"
+   },
   "devDependencies": {}
 }
