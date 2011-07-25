@@ -7,7 +7,7 @@ what?
 =====
 
 Want to pair players? Couples? Patients and Doctors? Any situation where you need to immediately
-pair two "things" you can use Matchmaker!
+pair two things you can use Matchmaker!
 
 Matchmaker allows you to pair objects according to a per object preference-evaluation function. 
 
