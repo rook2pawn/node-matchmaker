@@ -1,0 +1,14 @@
+{
+  "author": "David Wee <rook2pawn@gmail.com> (http://rook2pawn.com)",
+  "name": "matchmaker",
+  "description": "streaming, policy free matchmaking to pair objects using per-object preference functions",
+  "version": "0.0.1",
+  "homepage": "https://github.com/rook2pawn/node-matchmaker",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rook2pawn/node-matchmaker.git"
+  },
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {}
+}
