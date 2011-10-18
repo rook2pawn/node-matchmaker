@@ -9,6 +9,9 @@ var Matcher = function(obj) {
 		openRequests.pushAsync(obj,fn);
 		return self;
 	};
+    self.velocity = function() {
+        return openRequests.getVelocity();
+    };
 	self.queue = function(){
 		return openRequests.queue();
 	};
