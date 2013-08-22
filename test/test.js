@@ -1,10 +1,12 @@
 var matcher = require('../index');
-var mymatcher = matcher({
-	readyfunc:function(player,resultSet){
-		var opp = resultSet[0].player[0];
-		console.log(player.name + "("+ player.elo + ") most preferred opponent is " + opp.name + "(" + opp.elo + ")");
-	}
+var ee = require('event').EventEmitter;
+var notify = new ee;
+notify.on('done',function(player,resultSet){
+	var opp = resultSet[0].player[0];
+	console.log(player.name + "("+ player.elo + ") most preferred opponent is " + opp.name + "(" + opp.elo + ")");
 });
+
+var mymatcher = matcher({notify:notify});
 mymatcher
 	.push({id:1,name:"Garry Kasaparov",elo:2100,win:190,loss:20},matcher.preference)
 	.push({id:2,name:"Bobby Fischer",elo:2050,win:100,loss:38},matcher.preference)

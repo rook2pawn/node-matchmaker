@@ -1,62 +1,54 @@
-var EventEmitter = require('events').EventEmitter;
-var Qlib = require('queuelib');
-var partial = require('partial');
-var Matcher = function(obj) {
-	var readyfunc = obj.readyfunc;
-	var openRequests = Qlib({noDeleteOnNext:true});
-	var self = {};
-	self.push = function(obj,fn) {
-		openRequests.pushAsync(obj,fn);
-		return self;
-	};
-    self.velocity = function() {
-        return openRequests.getVelocity();
+var util = require('util');
+var ee = require('events').EventEmitter;
+
+var Matchmaker = function() {
+    if (!(this instanceof Matchmaker))
+        return new Matchmaker;
+    this.prefs = {
+        checkinterval : 5000,
+        threshold : 100,
+        maxiters : 5
     };
-	self.queue = function(){
-		return openRequests.queue();
-	};
-	self.update = function() {
-		openRequests.update();
-		return self;
-	};
-    self.readyFunc = function() {
-        readyfunc(arguments);
-        return self;
+    this.queue = [];
+    this.push = function(obj) {
+        this.queue.push(obj);
     };
-	return self;
+    this.policy = undefined;
+    this.timerid = undefined;
+    this.start = function() {
+        if (this.policy === undefined) {
+            console.log("Policy is not set! Cannot start");
+            return
+        }
+        var myfn = function() {
+            var iter = 0;
+            while ((this.queue.length >= 2) && (iter < this.prefs.maxiters)) {
+                var len = this.queue.length; 
+                var matchobj = {match:false,idx:undefined};
+                for (var i = 0; i < len; i++) {
+                    for (var j = i+1; j < len; j++) {
+                        var policyvalue = this.policy(this.queue[i],this.queue[j]);
+                        if (policyvalue >= this.prefs.threshold) {
+                            matchobj.match = true; matchobj.idx = [i,j];
+                            break;
+                        }
+                    } 
+                    if (matchobj.match) 
+                        break;
+                }
+                if (matchobj.match) {
+                    var a = this.queue.splice(matchobj.idx[0],1).pop();
+                    var b = this.queue.splice(matchobj.idx[1]-1,1).pop();
+                    this.emit('match',{a:a,b:b});
+                }
+                iter++;
+            }
+        };  
+        this.timerid = setInterval(myfn.bind(this),this.prefs.checkinterval);
+    };
+    this.stop = function() {
+        clearInterval(this.timerid);
+    };
 };
-Matcher.similarityFn = function(other,self,key) {
-	var diff = Math.abs(other[key]- self[key]);
-	var ratio = diff / self[key];
-	var match = 1 - ratio;
-	return match;
-};
-Matcher.preferenceGeneral = function(el,self,key) { 
-	var queue = self.queue();
-	console.log("queue is size " + queue.length);
-	var resultSet = [];
-	queue.forEach(function(params) {
-        var obj = params.el;
-		if (obj.id !== el.id) {
-			var result = {match:Matcher.similarityFn(obj,el,key),player:obj};
-			resultSet.push(result);
-		}
-	});
-	if (resultSet.length <= 3) { 
-		setTimeout(function() {
-			Matcher.preference(el,self,key);
-		},1000);
-	} else {
-		var comp = function(a,b) {
-			return b.match - a.match
-		};
-		resultSet = resultSet.sort(comp);
-        var opp = resultSet[0];
-        console.log("***EL");console.log(el);
-        console.log(opp);
-	}
-    self.done();
-};
-var foo = partial.rapply(Matcher.preferenceGeneral);
-Matcher.preference = foo('elo'); // right hand side partial apply (to set key in the arguments: el, emitter, self, key)
-exports = module.exports = Matcher;
+util.inherits(Matchmaker, ee);
+module.exports = exports = Matchmaker;
