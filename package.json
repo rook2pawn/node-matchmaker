@@ -18,5 +18,8 @@
       "email": "littlebitsman@littlebitsman.dev",
       "name": "littleBitsman"
     }
-  ]
+  ],
+  "scripts": {
+    "build": "tsc"
+  }
 }
