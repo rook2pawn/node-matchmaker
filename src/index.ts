@@ -1,9 +1,26 @@
 import EventEmitter from 'node:events'
 
 interface Options<T> {
+    /**
+     * The interval to check for new matches in milliseconds.
+     */
     checkInterval?: number,
+    /**
+     * The minimum number (inclusive) that `policy` must return in order to create a match.
+     * The check is done as `policy(a,b) >= threshold`.
+     */
     threshold?: number,
+    /**
+     * The maximum number of iterations to process the current queue between intervals of `checkInterval`.
+     */
     maxIterations?: number,
+    /**
+     * The policy of the matchmaker. It should return a number; when that number is greater than `threshold` a 
+     * match with `a` and `b` will be created (emitting `match`).
+     * @param a An object in the queue.
+     * @param b An object in the queue.
+     * @returns A number.
+     */
     policy?: (a: T, b: T) => number
 }
 
