@@ -1,9 +1,10 @@
 import EventEmitter from 'node:events'
 
-interface Options {
+interface Options<T> {
     checkInterval?: number,
     threshold?: number,
     maxIterations?: number,
+    policy?: (a: T, b: T) => number
 }
 
 export class Matchmaker<T> extends EventEmitter {
@@ -13,8 +14,8 @@ export class Matchmaker<T> extends EventEmitter {
     private _isRunning = false
     private _queue: T[] = []
     private timerId?: NodeJS.Timeout
-    policy: (a: T, b: T) => number
-    constructor(opts?: Options) {
+    policy?: (a: T, b: T) => number
+    constructor(opts?: Options<T>) {
         super()
         const options = {
             checkInterval: 5000,
@@ -25,6 +26,7 @@ export class Matchmaker<T> extends EventEmitter {
         this.checkInterval = options.checkInterval
         this.threshold = options.threshold
         this.maxIterations = options.maxIterations
+        this.policy = options.policy
     }
 
     get queue() {
@@ -38,14 +40,17 @@ export class Matchmaker<T> extends EventEmitter {
     start() {
         if (!this.policy) throw new Error('A matchmaking policy must be set before starting matchmaking.')
         this.timerId = setInterval(() => {
+            if (!this.policy) {
+                clearInterval(this.timerId)
+                throw new Error('A matchmaking policy must be set before starting matchmaking.')
+            }
             var iter = 0
             while (this.queue.length >= 2 && iter < this.maxIterations) {
                 const len = this.queue.length
                 var matchobj: number[] | undefined = undefined
                 for (var i = 0; i < len; i++) {
                     for (var j = i + 1; j < len; j++) {
-                        var policyvalue = this.policy(this.queue[i], this.queue[j])
-                        if (policyvalue >= this.threshold) {
+                        if (this.policy(this.queue[i], this.queue[j]) >= this.threshold) {
                             matchobj = [i, j]
                             break
                         }
@@ -72,12 +77,12 @@ export class Matchmaker<T> extends EventEmitter {
         }
     }
 
-    push(obj: T) {
-        this._queue.push(obj)
+    push(...objs: T[]) {
+        objs.forEach(v => this._queue.push(v))
     }
 
-    addToQueue(obj: T) {
-        this._queue.push(obj)
+    addToQueue(...objs: T[]) {
+        objs.forEach(v => this._queue.push(v))
     }
 
     on(eventName: 'match', listener: (a: T, b: T) => void): this
@@ -133,4 +138,8 @@ export class Matchmaker<T> extends EventEmitter {
         super.prependOnceListener(eventName, listener)
         return this
     }
+}
+
+export function newMatchmaker<T>(opts: Options<T>) {
+    return new Matchmaker<T>(opts)
 }

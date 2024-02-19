@@ -12,5 +12,11 @@
   "devDependencies": {
     "@types/node": "^20.11.19",
     "typescript": "^5.3.3"
-  }
+  },
+  "contributors": [
+    {
+      "email": "littlebitsman@littlebitsman.dev",
+      "name": "littleBitsman"
+    }
+  ]
 }
