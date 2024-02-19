@@ -9,5 +9,8 @@
     "url": "git://github.com/rook2pawn/node-matchmaker.git"
   },
   "main": "index.js",
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "typescript": "^5.3.3"
+  }
 }

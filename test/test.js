@@ -1,4 +1,4 @@
-var Matchmaker = require('./');
+var Matchmaker = require('..');
 var mymatch = new Matchmaker;
 
 mymatch.on('match',function(obj) {
