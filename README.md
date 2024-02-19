@@ -1,6 +1,5 @@
-matchmaker
-==========
-Simplistic matchmaker based off of matchmaker(https://npmjs.com/package/matchmaker), but with type definitions.
+# matchmaker
+Simplistic matchmaker based off of [matchmaker](https://npmjs.com/package/matchmaker), but with type definitions.
 The original is no longer maintained, so I made this.
 ```js
     var mymatch = require('matchmaker.js').newMatchmaker({
